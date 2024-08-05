@@ -1,0 +1,207 @@
+openapi: 3.0.1
+info:
+  title: listings-app
+  version: 1.0.0
+  description: >
+    Documentation to connect and interact with Property Listings API.
+  contact:
+    name: mford@mford.com
+servers:
+- url: "https://oyifw9wm74.execute-api.us-west-2.amazonaws.com/{basePath}"
+  variables:
+    basePath:
+      default: ""
+paths:
+  /listings/{id}:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyListingResponse'
+          description: property listing data
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PropertyListingRequest'
+            example: {
+              "description": "Art Deco Gem with Garden in the heart of Sacramento.  123 Main St. Sacramento, CA 94203",
+              "amenities": [ "POOL", "HOT_TUB", "FIREPLACE" ],
+              "bedCount": 4,
+              "bathFullCount": 3
+            }
+      responses:
+        200:
+          description: Returns the results of the updated listing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyListingRequest'
+              example: {
+                "id": "85f43775-7944-459e-be67-21033c70d252",
+                "description": "Art Deco Gem with Garden in the heart of Sacramento.  123 Main St. Sacramento, CA 94203",
+                "amenities": [ "POOL", "HOT_TUB", "FIREPLACE" ],
+                "bedCount": 4,
+                "bathFullCount": 3
+              }
+    delete:
+      responses:
+        204:
+          description: property listing removal success
+    parameters:
+    - description: The id of the listing.  In UUID format.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: "85f43775-7944-459e-be67-21033c70d252"
+  /listings:
+    get:
+      responses:
+        200:
+          description: all property listing data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PropertyListingResponse'
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PropertyListingRequest'
+            example: {
+              "description": "Art Deco Gem with Garden in the heart of Sacramento.  123 Main St. Sacramento, CA 94203",
+              "amenities": [ "POOL", "HOT_TUB", "FIREPLACE" ],
+              "bedCount": 4,
+              "bathFullCount": 3
+            }
+      responses:
+        201:
+          description: Returns the results of the created listing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyListingRequest'
+              example: {
+                "id": "85f43775-7944-459e-be67-21033c70d252",
+                "description": "Art Deco Gem with Garden in the heart of Sacramento.  123 Main St. Sacramento, CA 94203",
+                "amenities": [ "POOL", "HOT_TUB", "FIREPLACE" ],
+                "bedCount": 4,
+                "bathFullCount": 3
+              }
+components:
+  schemas:
+    AmenityType:
+      enum:
+        - PARKING
+        - POOL
+        - HOT_TUB
+        - WIFI
+        - COFFEE_MAKER
+        - LAUNDRY_SELF_SERVICE
+        - FIREPLACE
+      type: string
+    PropertyListingRequest:    
+      type: object
+      required:
+        - description
+        - bedCount
+        - bathFullCount
+      properties:
+        description:
+          type: string
+          description: >-
+            General description of the property.  Can include street address, number of guests the property accomodates, etc.
+        amenities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmenityType'
+          description: >-
+            A list of amenities included at the property.
+        bathFullCount:
+          description: >-
+            The total number of full bathrooms at the property. This includes
+            the total number of full baths and three-quarter baths with
+            generally the following minimum elements Toilet, Sink, Bathtub or
+            Shower Head.
+          type: integer
+        bathHalfCount:
+          description: >-
+            The total number of half (partial) baths at the property. This
+            includes the total number of half baths and one-quarter baths, where
+            a typical half-bath is a Sink and Toilet and a typical one-quarter
+            bath is a Sink.
+          type: integer
+        bedCount:
+          description: >-
+            The total number of bedrooms at the property (dwelling).
+          type: integer
+        livingCount:
+          description: >-
+            The total number of living rooms at the property (dwelling).
+          type: integer
+        kitchenCount:
+          description: >-
+            The total number of kitchens at the property (dwelling).
+          type: integer
+        diningCount:
+          description: >-
+            The total number of dining rooms at the property (dwelling).
+          type: integer
+
+    PropertyListingResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: >-
+            Automatically generated id for the listing.  In UUID format.
+        description:
+          type: string
+          description: >-
+            General description of the property.  Can include street address, number of guests the property accomodates, etc.
+        amenities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmenityType'
+          description: >-
+            A list of amenities included at the property.
+        bathFullCount:
+          description: >-
+            The total number of full bathrooms at the property. This includes
+            the total number of full baths and three-quarter baths with
+            generally the following minimum elements Toilet, Sink, Bathtub or
+            Shower Head.
+          type: integer
+        bathHalfCount:
+          description: >-
+            The total number of half (partial) baths at the property. This
+            includes the total number of half baths and one-quarter baths, where
+            a typical half-bath is a Sink and Toilet and a typical one-quarter
+            bath is a Sink.
+          type: integer
+        bedCount:
+          description: >-
+            The total number of bedrooms at the property (dwelling).
+          type: integer
+        livingCount:
+          description: >-
+            The total number of living rooms at the property (dwelling).
+          type: integer
+        kitchenCount:
+          description: >-
+            The total number of kitchens at the property (dwelling).
+          type: integer
+        diningCount:
+          description: >-
+            The total number of dining rooms at the property (dwelling).
+          type: integer
+            

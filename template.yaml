@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  Example template for an HTTP API that creates, updates, and deletes items in DynamoDB
+  Documentation to connect and interact with Property Listings API.
   
 Globals:
   Function:
@@ -16,41 +16,52 @@ Resources:
       Runtime: nodejs18.x
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref ItemsTable
+            TableName: !Ref ListingsTable
       Events:
-        GetAllItems:
+        GetListing:
           Type: HttpApi
           Properties:
-            Path: /items
+            Path: /listings/{id}
             Method: GET
-        GetAnItem:
+        UpdateListing:
           Type: HttpApi
           Properties:
-            Path: /items/{id}
-            Method: GET
-        DeleteAnItem:
-          Type: HttpApi
-          Properties:
-            Path: /items/{id}
-            Method: DELETE
-        CreateOrUpdateItem:
-          Type: HttpApi
-          Properties:
-            Path: /items
+            Path: /listings/{id}
             Method: PUT
+        DeleteListing:
+          Type: HttpApi
+          Properties:
+            Path: /listings/{id}
+            Method: DELETE
+        GetAllListings:
+          Type: HttpApi
+          Properties:
+            Path: /listings
+            Method: GET
+        CreateListing:
+          Type: HttpApi
+          Properties:
+            Path: /listings
+            Method: POST
 
-  ItemsTable:
-    Type: AWS::Serverless::SimpleTable
+  ListingsTable:
+    Type: AWS::DynamoDB::Table
     Properties:
-      PrimaryKey:
-        Name: id
-        Type: String
-      TableName: http-crud-tutorial-items
+      TableName: app-listings
+      AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
 
 Outputs:
   ApiEndpoint:
     Description: "The invoke URL for our HTTP API"
-    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/items"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/listings"
   Function:
     Description: "DynamoDB handler function ARN"
     Value: !GetAtt DDBHandlerFunction.Arn
